@@ -1,138 +1,179 @@
-/* 열기 */
-$('.q_btn').click(function () {
-	fixShow(true, '.modal_wrap', '.pop');
-});
+/* 모달 열기 */
+function openModal(modalSelector, popSelector) {
+	const modal = document.querySelector(modalSelector);
+	if (!modal) return;
 
-$('#checkbox2').change(function () {
-	if ($(this).is(':checked')) {
-		fixShow(true, '.modal_wrap2', '.pop2');
-	}
-});
+	const pop = modal.querySelector(popSelector);
+	if (!pop) return;
 
-/* 닫기 */
-$('.modal_wrap, .modal_wrap .close_btn').click(function () {
-	fixShow(false, '.modal_wrap', '.pop');
-});
+	pop.removeAttribute('style');
+	modal.style.display = 'block';
 
-$('.modal_wrap2, .modal_wrap2 .close_btn').click(function () {
-	fixShow(false, '.modal_wrap2', '.pop2');
-});
-
-$('.modal_wrap3 .close_btn').click(function () {
-	fixShow(false, '.modal_wrap3', '.pop3');
-});
-
-/* 팝업 클릭 시 닫히는 거 방지 */
-$('.pop, .pop2, pop3').click(function (e) {
-	e.stopPropagation();
-});
-
-/* 공용 함수 */
-function fixShow(show, modalSelector, popSelector) {
-	if (show) {
-		$(modalSelector).css('display', 'block');
-		setTimeout(function () {
-			$(modalSelector).addClass('active');
-			$(popSelector).addClass('active');
-		}, 0);
-	} else {
-		$(modalSelector).removeClass('active');
-		$(popSelector).removeClass('active');
-		setTimeout(function () {
-			$(modalSelector).css('display', 'none');
-		}, 300);
-	}
-}
-
-/* 폼 파일 */
-const userFile = document.getElementById('user_file');
-
-if (userFile) {
-	userFile.addEventListener('change', function () {
-		const fileName = this.files[0]?.name || '';
-		document.querySelector('.file_name').value = fileName;
+	requestAnimationFrame(() => {
+		modal.classList.add('active');
+		pop.classList.add('active');
 	});
 }
 
-/* 테스트 */
-$('.fish_group li').click(function (e) {
-	e.preventDefault();
-	window.location.href = '../html/pufferfish_game2.html';
+document.querySelector('.q_btn') ?.addEventListener('click', () => {
+	openModal('.modal_wrap', '.pop');
 });
 
-$('.next_btn').click(function (e) {
-	e.preventDefault();
-	window.location.href = '../html/pufferfish_game_form.html';
+document.getElementById('checkbox2') ?.addEventListener('change', e => {
+	if (e.target.checked) {
+		openModal('.modal_wrap2', '.pop2');
+	}
 });
 
-/* 복어 클릭 */
-const fishImg = document.querySelector('.fish_click img');
-const fishBtn = document.querySelector('.fish_click');
-const tools = document.querySelectorAll('.tool');
+/* 드래그 모달 닫기 */
+const POP_SELECTOR = '.pop, .pop2, .pop3';
+const CLOSE_DISTANCE = 100;
+const TRANSITION_TIME = 300;
 
-const fishImages = [
-	'../img/step-01-2@3x.png',
-	'../img/step-02-2@3x.png',
-	'../img/step-03-2@3x.png',
-	'../img/step-04-2@3x.png',
-	'../img/step-05-2@3x.png',
-	'../img/step-06-2@3x.png',
-	'../img/step-07-2@3x.png',
-	'../img/step-08-2@3x.png',
-	'../img/step-09-2@3x.png',
-	'../img/step-10-2@3x.png',
-	'../img/step-11-2@3x.png'
-];
+document.querySelectorAll(POP_SELECTOR).forEach(pop => {
+	let startY = 0;
+	let currentY = 0;
+	let isDragging = false;
 
-let step = 0;
-let isFinalReached = false;
-let isTransitioning = false;
+	const modal = pop.closest('[class^="modal_wrap"]');
 
-fishBtn.addEventListener('click', () => {
-	/*  마지막 복어 클릭 시 */
-	if (isFinalReached && !isTransitioning) {
-		isTransitioning = true;
-
-		// tool 제거
-		tools.forEach(tool => {
-			tool.classList.add('hide');
-		});
-
-		// 복어 확대
-		void fishImg.offsetWidth;
-		fishImg.classList.add('zoom-out');
-		fishBtn.style.pointerEvents = 'none';
-
-		// 다음 화면 전환
-		setTimeout(() => {
-			location.href = './pufferfish_game3_2.html';
-			document.body.classList.add('next-scene');
-		}, 300);
-
-		return;
+	function getClientY(e) {
+		return e.touches ? e.touches[0].clientY : e.clientY;
 	}
 
-	/* 마지막 전 복어 클릭 시 */
-	if (step < fishImages.length - 1) {
-		step++;
+	function onMove(e) {
+		if (!isDragging) return;
 
-		fishImg.src = fishImages[step];
+		currentY = getClientY(e);
+		const deltaY = currentY - startY;
 
-		fishImg.classList.remove('grow', 'zoom-out');
-		void fishImg.offsetWidth;
-		fishImg.classList.add('grow');
-
-		// tool 변경
-		let toolIndex = Math.floor(step / 3);
-		toolIndex = Math.min(toolIndex, tools.length - 1);
-
-		tools.forEach(tool => tool.classList.remove('active'));
-		tools[toolIndex].classList.add('active');
-
-		// 마지막 이미지 도달 체크
-		if (step === fishImages.length - 1) {
-			isFinalReached = true;
+		if (deltaY > 0) {
+			pop.style.transform = `translate(-50%, ${deltaY}px)`;
 		}
 	}
+
+	function onEnd() {
+		if (!isDragging) return;
+		isDragging = false;
+
+		const deltaY = currentY - startY;
+
+		if (deltaY > CLOSE_DISTANCE) {
+			modal ?.classList.remove('active');
+			pop.classList.remove('active');
+
+			setTimeout(() => {
+				modal.style.display = 'none';
+				pop.removeAttribute('style');
+			}, TRANSITION_TIME);
+		} else {
+			pop.removeAttribute('style');
+		}
+
+		document.removeEventListener('mousemove', onMove);
+		document.removeEventListener('mouseup', onEnd);
+		document.removeEventListener('touchmove', onMove);
+		document.removeEventListener('touchend', onEnd);
+	}
+
+	pop.addEventListener('mousedown', e => {
+		isDragging = true;
+		startY = getClientY(e);
+		currentY = startY;
+
+		document.addEventListener('mousemove', onMove);
+		document.addEventListener('mouseup', onEnd);
+	});
+
+	pop.addEventListener('touchstart', e => {
+		isDragging = true;
+		startY = getClientY(e);
+		currentY = startY;
+
+		document.addEventListener('touchmove', onMove);
+		document.addEventListener('touchend', onEnd);
+	});
 });
 
+/* 파일 업로드 이름 표시 */
+const userFile = document.getElementById('user_file');
+const fileNameInput = document.querySelector('.file_name');
+
+userFile?.addEventListener('change', function () {
+  fileNameInput.value = this.files[0]?.name || '';
+});
+
+/* 테스트용 페이지 이동 */
+document.querySelectorAll('.fish_group li').forEach(li => {
+	li.addEventListener('click', e => {
+		e.preventDefault();
+		location.href = '../html/pufferfish_game2.html';
+	});
+});
+
+document.querySelector('.next_btn') ?.addEventListener('click', e => {
+	e.preventDefault();
+	location.href = '../html/pufferfish_game_form.html';
+});
+
+/* 복어 클릭 게임 */
+const fishBtn = document.querySelector('.fish_click');
+const fishImg = document.querySelector('.fish_click img');
+const tools = document.querySelectorAll('.tool');
+
+if (fishBtn && fishImg) {
+	const fishImages = [
+		'../img/step-01-2@3x.png',
+		'../img/step-02-2@3x.png',
+		'../img/step-03-2@3x.png',
+		'../img/step-04-2@3x.png',
+		'../img/step-05-2@3x.png',
+		'../img/step-06-2@3x.png',
+		'../img/step-07-2@3x.png',
+		'../img/step-08-2@3x.png',
+		'../img/step-09-2@3x.png',
+		'../img/step-10-2@3x.png',
+		'../img/step-11-2@3x.png'
+	];
+
+	let step = 0;
+	let isFinalReached = false;
+	let isTransitioning = false;
+
+	fishBtn.addEventListener('click', () => {
+		/* 마지막 복어 클릭 */
+		if (isFinalReached && !isTransitioning) {
+			isTransitioning = true;
+
+			tools.forEach(tool => tool.classList.add('hide'));
+
+			fishImg.offsetWidth;
+			fishImg.classList.add('zoom-out');
+			fishBtn.style.pointerEvents = 'none';
+
+			setTimeout(() => {
+				location.href = './pufferfish_game3_2.html';
+			}, 300);
+
+			return;
+		}
+
+		/* 일반 단계 */
+		if (step < fishImages.length - 1) {
+			step++;
+			fishImg.src = fishImages[step];
+
+			fishImg.classList.remove('grow', 'zoom-out');
+			fishImg.offsetWidth;
+			fishImg.classList.add('grow');
+
+			const toolIndex = Math.min(Math.floor(step / 3), tools.length - 1);
+			tools.forEach(tool => tool.classList.remove('active'));
+			tools[toolIndex] ?.classList.add('active');
+
+			if (step === fishImages.length - 1) {
+				isFinalReached = true;
+			}
+		}
+	});
+}
