@@ -262,7 +262,7 @@ body {
   animation: fishPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .fish_click img.zoom-out {
-  animation: fishZoomOut 0.5s ease-in forwards;
+  animation: fishZoomOut 0.3s ease-in forwards;
 }
 .fish_click img {
   width: 280px;
@@ -287,23 +287,27 @@ body {
 }
 @keyframes fishZoomOut {
   0% {
-    transform: scale(0.7);
-    opacity: 0;
-  }
-  20% {
-    transform: scale(1.5);
+    transform: scale(0.5);
     opacity: 1;
   }
-  50% {
-    transform: scale(2.2);
-    opacity: 0.2;
-  }
-  80% {
+  20% {
     transform: scale(1);
+    opacity: 0.8;
+  }
+  40% {
+    transform: scale(2);
     opacity: 0.6;
   }
+  60% {
+    transform: scale(4);
+    opacity: 0.3;
+  }
+  80% {
+    transform: scale(6);
+    opacity: 0.15;
+  }
   100% {
-    transform: scale(1);
+    transform: scale(8);
     opacity: 0;
   }
 }

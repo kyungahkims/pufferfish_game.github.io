@@ -102,7 +102,7 @@ fishBtn.addEventListener('click', () => {
 		setTimeout(() => {
 			location.href = './pufferfish_game3_2.html';
 			document.body.classList.add('next-scene');
-		}, 500);
+		}, 300);
 
 		return;
 	}
