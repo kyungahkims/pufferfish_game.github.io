@@ -60,6 +60,11 @@ $('.fish_group li').click(function (e) {
 	window.location.href = '../html/pufferfish_game2.html';
 });
 
+$('.next_btn').click(function (e) {
+	e.preventDefault();
+	window.location.href = '../html/pufferfish_game_form.html';
+});
+
 /* 복어 클릭 */
 const fishImg = document.querySelector('.fish_click img');
 const fishBtn = document.querySelector('.fish_click');
