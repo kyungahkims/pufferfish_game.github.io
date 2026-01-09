@@ -28,7 +28,7 @@ document.getElementById('checkbox2') ?.addEventListener('change', e => {
 /* 드래그 모달 닫기 */
 const POP_SELECTOR = '.pop, .pop2, .pop3';
 const CLOSE_DISTANCE = 100;
-const TRANSITION_TIME = 300;
+const TRANSITION_TIME = 100;
 
 document.querySelectorAll(POP_SELECTOR).forEach(pop => {
 	let startY = 0;
