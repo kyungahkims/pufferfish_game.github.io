@@ -651,7 +651,7 @@ body {
 /* modal_wrap */
 .modal_wrap {
 	width: 100%;
-	height: 100vh;
+	height: calc(var(--vh, 1vh) * 100);
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -780,7 +780,7 @@ body {
 	left: 50%;
 	width: 100%;
 	max-width: 430px;
-	height: 100vh;
+	height: calc(var(--vh, 1vh) * 100);
 	background-color: #fff;
 	transition: 0.3s;
 	transform: translateX(-50%);
@@ -976,7 +976,7 @@ body {
 
 .modal_wrap2 {
 	width: 100%;
-	height: 100vh;
+	height: calc(var(--vh, 1vh) * 100);
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -1069,7 +1069,7 @@ body {
 /* modal_wrap3 */
 .modal_wrap3 {
 	width: 100%;
-	height: 100vh;
+	height: calc(var(--vh, 1vh) * 100);
 	position: absolute;
 	top: 0;
 	left: 0;
