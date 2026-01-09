@@ -1,3 +1,13 @@
+function setScreen() {
+	let vh = window.innerHeight * 0.01;
+	document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+/* 높이 */
+window.addEventListener('load', () => {
+	setScreen();
+});
+
 /* 모달 열기 */
 function openModal(modalSelector, popSelector) {
 	const modal = document.querySelector(modalSelector);
