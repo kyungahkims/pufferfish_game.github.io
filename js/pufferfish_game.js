@@ -105,6 +105,25 @@ document.querySelectorAll(POP_SELECTOR).forEach(pop => {
 	});
 });
 
+/* 클릭 닫기 */
+document.querySelectorAll('.close_btn').forEach(btn => {
+	btn.addEventListener('click', e => {
+		const pop = e.target.closest('.pop, .pop2, .pop3');
+		if (!pop) return;
+
+		const modal = pop.closest('[class^="modal_wrap"]');
+		if (!modal) return;
+
+		modal.classList.remove('active');
+		pop.classList.remove('active');
+
+		setTimeout(() => {
+			modal.style.display = 'none';
+			pop.removeAttribute('style');
+		}, TRANSITION_TIME);
+	});
+});
+
 /* 파일 업로드 이름 표시 */
 const userFile = document.getElementById('user_file');
 const fileNameInput = document.querySelector('.file_name');
