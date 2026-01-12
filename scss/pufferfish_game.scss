@@ -531,6 +531,12 @@ body {
 .dim {
 	padding: 0 20px 34px;
 
+	.lottie {
+		width: 100%;
+		height: 190px;
+		margin: 44px auto 18px;
+	}
+
 	.result_title {
 		font-size: 24px;
 		text-align: center;
@@ -548,13 +554,15 @@ body {
 	}
 
 	.fail {
+		margin: 14px auto 20px;
+
 		&::before {
 			content: "";
 			display: block;
 			width: 160px;
 			height: 120px;
 			background: url('../img/sub-g-img-04@3x.png') no-repeat center/contain;
-			margin: 14px auto 20px;
+			margin: 0 auto 14px;
 		}
 
 		.tool {
@@ -569,7 +577,7 @@ body {
 		text-align: center;
 		letter-spacing: -0.8px;
 		color: #fff;
-		margin-top: 20px;
+		margin-top: 8px;
 
 		span {
 			color: #204bd8;
