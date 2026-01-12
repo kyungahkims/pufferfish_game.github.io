@@ -4,9 +4,9 @@ function setScreen() {
 }
 
 /* 높이 */
-window.addEventListener('load', () => {
-	setScreen();
-});
+window.addEventListener('load', setScreen);
+window.addEventListener('resize', setScreen);
+window.addEventListener('orientationchange', setScreen);
 
 /* 모달 열기 */
 function openModal(modalSelector, popSelector) {
